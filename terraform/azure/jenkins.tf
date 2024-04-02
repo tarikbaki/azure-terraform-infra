@@ -3,6 +3,7 @@ module "jenkins" {
   resource_group_name = azurerm_resource_group.resource_group_name.name
   vm_hostname         = "jenkins-vm"
   vm_os_simple        = "UbuntuServer"
+  vm_os_sku           = "22.04-LTS"
   # admin_password      = ""
   remote_port         = "22"
   vm_size             = "Standard_B2s"
