@@ -6,11 +6,11 @@ module "jenkins" {
   vm_os_publisher     = "Canonical"
   vm_os_offer         = "0001-com-ubuntu-server-jammy"
   vm_os_sku           = "22_04-lts-gen2"
-  admin_password      = "Vngrs1vngrs2"
+  # admin_password      = ""
   remote_port         = "22"
-  vm_size             = "Standard_B2s"
+  vm_size             = "Standard_B2ms"
 
-  delete_os_disk_on_termination    = true
+  # delete_os_disk_on_termination    = true
   # public_ip_dns       = ["${var.environment}jenkins${var.region}"] // change to a unique name per datacenter region
   vnet_subnet_id      = module.network.vnet_subnets[0]
 
@@ -30,9 +30,9 @@ resource "null_resource" "jenkins" {
       "wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -",
       "sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
       "sudo apt update -qq",
-      "sudo apt install -y default-jre",
       "sudo apt install -y rpm",
       "sudo apt install -y aptitude",
+      "sudo apt install nano",
       "sudo apt install -y jenkins",
       "sudo apt install -y systemd",
       "sudo systemctl start jenkins",
@@ -43,8 +43,9 @@ resource "null_resource" "jenkins" {
       "echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections",
       "sudo apt-get -y install iptables-persistent",
       "sudo ufw allow 8080",
-      "sudo apt install -y fontconfig openjdk-17-jre",
+      "sudo apt install -y openjdk-17-jdk",
       "sudo systemctl restart jenkins",
+      "sudo echo '10.0.1.5 cur-nexus.vngrs.com' | sudo tee -a /etc/hosts"
     ]
       connection {
       type        = "ssh"
@@ -54,4 +55,3 @@ resource "null_resource" "jenkins" {
     }
   }
 }
-
